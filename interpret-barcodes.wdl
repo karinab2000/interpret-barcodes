@@ -6,6 +6,10 @@ task CompileBarcodeFiles {
         Int threshold
     }
 
+    Int disk_size = 1 + 5 * ceil(
+    size(input_directory, "GB")
+    )
+
     command <<<
         # Run the Python script for compiling datasets
         python3 <<EOF
@@ -282,6 +286,12 @@ EOF
     }
 
     runtime {
+        cpu: 2
+        memory: "128 GiB"
+        disks: "local-disk " + disk_size + " SSD"
+        bootDiskSizeGb: 50
+        preemptible: 0
+        maxRetries: 0
         docker: "python:3.8-slim"  # Or another Python Docker image with Pandas
     }
 }
