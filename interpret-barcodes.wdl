@@ -2,7 +2,7 @@ version 1.0
 
 task CompileBarcodeFiles {
     input {
-        String input_directory
+        Array[File] input_directory
         Int threshold
     }
 
@@ -11,7 +11,7 @@ task CompileBarcodeFiles {
     )
 
     command <<<
-        # Run the Python script for compiling datasets
+
         python3 <<EOF
 
 import pandas as pd
@@ -226,7 +226,6 @@ def prepare_output(sample_barcode_dict, remove_sample = [], threshold = 8):
     for sample in sample_barcode_dict.values():
         if sample not in remove_sample:
             if sample.raw_name == 'DD2':
-                # Handle Dd2
                 sample_name = sample.raw_name
                 raw_name = sample.raw_name
                 cc = ''
@@ -237,10 +236,10 @@ def prepare_output(sample_barcode_dict, remove_sample = [], threshold = 8):
                 # Match patterns like 'KDG13' or 'SLP_20_7'
                 match = re.match(r'([A-Z]+)(\d+)$|([A-Z]+)_(?:\d+_)?(\d+)', sample.raw_name)
                 if match:
-                    if match.group(1):  # Match for 'KDG13'-style
+                    if match.group(1):  
                         iso3 = match.group(1)
                         number = match.group(2)
-                    elif match.group(3):  # Match for 'SLP_20_7'-style
+                    elif match.group(3): 
                         iso3 = match.group(3)
                         number = match.group(4)
 
@@ -250,7 +249,6 @@ def prepare_output(sample_barcode_dict, remove_sample = [], threshold = 8):
                     raw_name = sample.raw_name
                     cc = 'SEN'
                 else:
-                    # Handle fallback logic
                     sample_name = sample.raw_name
                     raw_name = sample.raw_name
                     cc = ''
@@ -258,7 +256,6 @@ def prepare_output(sample_barcode_dict, remove_sample = [], threshold = 8):
                     iso3 = ''
                     number_text = ''
 
-            # Build the line and append to output_data
             line = [cc, iso3, year, number_text, sample_name, raw_name, ''.join(sample.barcode[threshold])] + list(sample.barcode[threshold]) + [sample.n_missing[threshold], sample.poly_count[threshold], sample.status[threshold], threshold]
             output_data.append(line)
 
@@ -292,17 +289,16 @@ EOF
         bootDiskSizeGb: 50
         preemptible: 0
         maxRetries: 0
-        docker: "python:3.8-slim"  # Or another Python Docker image with Pandas
+        docker: "python:3.8-slim"  
     }
 }
 
 workflow compile_datasets {
     input {
-        String input_directory   # Directory containing external datasets
+        Array[File] input_directory   
         Int threshold = 8       # Threshold value (default: 8)
     }
 
-    # Task to compile the barcode files
     call CompileBarcodeFiles {
         input:
             input_directory = input_directory,
