@@ -16,6 +16,7 @@ task CompileBarcodeFiles {
 
         import pandas as pd
         from pandas import DataFrame, read_csv, read_excel
+        import collections
         from collections import defaultdict, Counter
         import re
         import numpy as np
@@ -302,7 +303,7 @@ task CompileBarcodeFiles {
         bootDiskSizeGb: 50
         preemptible: 0
         maxRetries: 0
-        docker: "python:3.8-slim"  
+        docker: "karinab2000/interpret-barcodes-python:v1"  
     }
 }
 
