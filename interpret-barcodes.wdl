@@ -192,34 +192,25 @@ def extract_barcodes(file, barcode_dict=None, duplicates = defaultdict(lambda:1)
 
 
 
-def read_barcode_files(file_list=None, exclude_files=None):
+def read_barcode_files(directory=None, exclude_files= None):
     if not exclude_files:
         exclude_files = []
-    if not file_list:
-        raise ValueError("No input files provided. Please supply a list of Excel files.")
-
     tmp_dict = {}
-    duplicates = defaultdict(lambda: 1)
-
-    for file in file_list:
-        if file != 'barcodes.xlsx' and file not in exclude_files:
-            print(f"Processing file: {file}")
-            try:
-                tmp_dict, duplicates = extract_barcodes(
-                    file, barcode_dict=tmp_dict, duplicates=duplicates
-                )
-            except Exception as e:
-                print(f"Error processing {file}: {e}. Attempting with default fields.")
-                tmp_dict, duplicates = extract_barcodes(
-                    file,
-                    barcode_dict=tmp_dict,
-                    duplicates=duplicates,
-                    a1_crt_field='Allele1 Ct',
-                    a2_crt_field='Allele2 Ct'
-                )
-
+    duplicates = defaultdict(lambda:1)
+    if directory:
+        pathname = directory + '/*xls*'
+    else:
+        pathname = '*xls*'
+    for file in glob.glob(pathname):
+        if file != 'barcodes.xlsx':
+            print(file)
+            if file not in exclude_files:
+                try:
+                    tmp_dict, duplicates = extract_barcodes(file, barcode_dict = tmp_dict, duplicates = duplicates)
+                except:
+                    tmp_dict, duplicates = extract_barcodes(file, barcode_dict = tmp_dict, duplicates = duplicates,
+                                                                a1_crt_field='Allele1 Ct', a2_crt_field = 'Allele2 Ct')
     return tmp_dict
-
         
 def prepare_output(sample_barcode_dict, remove_sample = [], threshold = 8):
     output_data = [['cc', 'ISO3', 'Year', 'Number_Text', 'Sample_Name', 'Raw_Name',
@@ -277,7 +268,7 @@ def prepare_output(sample_barcode_dict, remove_sample = [], threshold = 8):
     return final_df
 
 if __name__ == '__main__':
-    barcode_data = read_barcode_files(file_list = "~{input_directory}")
+    barcode_data = read_barcode_files(directory = ["~{sep='","' input_directory}"])
     out = prepare_output(barcode_data, threshold=~{threshold})
     with pd.ExcelWriter('barcodes.xlsx', engine='xlsxwriter') as writer:
         for iso3, group in out.groupby('ISO3'):
