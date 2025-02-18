@@ -544,35 +544,35 @@ task FinalDataset {
 
         mccoil_summaries= ["~{sep='","' mccoil_summary_files}"]
 
-        print(mccoil_summaries)
+        good_sheets = []
 
-        with pd.ExcelFile("~{output_file1}") as xls:
-            all_sheets = {sheet: xls.parse(sheet) for sheet in xls.sheet_names}
+        sheet_names = all_sheets.keys()
 
-        for sheet_name in all_sheets.keys():
-            if sheet_name not in ['Control']: 
-                
-                summary_file_path = Path.Path(f"mccoil_{sheet_name}_summary.txt")
-                print(summary_file_path)
+        for x in sheet_names:
+            if x == 'Control':
+                continue
+            if len(all_sheets[x]) >= 20:
+                good_sheets.append(x)
 
-                if summary_file_path.name in mccoil_summaries:
-                    print(summary_file_path.name)
+        for sheet_name in good_sheets:
 
-                    txt_data = pd.read_csv(summary_file_path, sep="\t")
+            txt_file = next((f for f in mccoil_summaries if f"mccoil_{sheet_name}_summary.txt" in f), None)
 
-                    # Rename 'name' in txt_data to match 'Sample_Name' in Excel
-                    if 'name' in txt_data.columns:
-                        txt_data.rename(columns={'name': 'Sample_Name'}, inplace=True)
+            txt_data = pd.read_csv(txt_file, sep="\t")
+            
+            # Rename 'name' in txt_data to match 'Sample_Name' in Excel
+            if 'name' in txt_data.columns:
+                txt_data.rename(columns={'name': 'Sample_Name'}, inplace=True)
 
-                    # Merge on Sample_Name
-                    merged_data = all_sheets[sheet_name].merge(txt_data[['Sample_Name', 'median']], 
-                                                            on='Sample_Name', how='left')
+            # Merge on Sample_Name
+            merged_data = all_sheets[sheet_name].merge(txt_data[['Sample_Name', 'median']], 
+                                                    on='Sample_Name', how='left')
 
-                    # Rename the median column to 'mccoil_median'
-                    merged_data.rename(columns={'median': 'mccoil_median'}, inplace=True)
+            # Rename the median column to 'mccoil_median'
+            merged_data.rename(columns={'median': 'mccoil_median'}, inplace=True)
 
-                    # Update the dictionary with merged data
-                    all_sheets[sheet_name] = merged_data
+            # Update the dictionary with merged data
+            all_sheets[sheet_name] = merged_data
 
         with pd.ExcelWriter('barcode_final.xlsx', engine='xlsxwriter') as writer:
             for sheet_name, sheet_data in all_sheets.items():
