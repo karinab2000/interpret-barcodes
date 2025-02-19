@@ -544,6 +544,9 @@ task FinalDataset {
 
         mccoil_summaries= ["~{sep='","' mccoil_summary_files}"]
 
+        with pd.ExcelFile("~{output_file1}") as xls:
+            all_sheets = {sheet: xls.parse(sheet) for sheet in xls.sheet_names}
+            
         good_sheets = []
 
         sheet_names = all_sheets.keys()
