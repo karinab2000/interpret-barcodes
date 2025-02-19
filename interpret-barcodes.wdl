@@ -522,7 +522,7 @@ task FinalDataset {
     }
 
     Int disk_size = 1 + 5 * ceil(
-    size([output_file1, mccoil_summary_files], "GB")
+    size(output_file1, "GB")
     )
 
     command <<<
@@ -541,7 +541,7 @@ task FinalDataset {
         import os
         import subprocess
         import pathlib as Path
-
+        print(f"Disk size: {disk_size} GB")
         mccoil_summaries= ["~{sep='","' mccoil_summary_files}"]
 
         good_sheets = []
