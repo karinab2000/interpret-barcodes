@@ -511,7 +511,7 @@ task RunMcCoil {
         bootDiskSizeGb: 50
         preemptible: 0
         maxRetries: 0
-        docker: "karinab2000/mccoil-docker:v4"  
+        docker: "karinab2000/mccoil-docker:v5"  
     }
 }
 
