@@ -541,7 +541,7 @@ task FinalDataset {
         import os
         import subprocess
         import pathlib as Path
-        print(f"Disk size: {disk_size} GB")
+
         mccoil_summaries= ["~{sep='","' mccoil_summary_files}"]
 
         good_sheets = []
