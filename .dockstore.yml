@@ -3,3 +3,6 @@ workflows:
 - name: interpret-barcodes
   subclass: wdl
   primaryDescriptorPath: /interpret-barcodes.wdl
+- name: run-incidence-regression
+  subclass: wdl
+  primaryDescriptorPath: /run-incidence-regression.wdl
