@@ -546,7 +546,7 @@ task FinalDataset {
 
         with pd.ExcelFile("~{output_file1}") as xls:
             all_sheets = {sheet: xls.parse(sheet) for sheet in xls.sheet_names}
-            
+
         good_sheets = []
 
         sheet_names = all_sheets.keys()
@@ -629,10 +629,6 @@ workflow compile_datasets {
     }
 
     output {
-        File combined_file = CompileBarcodeFiles.output_file1
-        File recoded_file = CreateMcCoilExcel.output_file2
-        Array[File] mccoil_output = RunMcCoil.mccoil_output_files
-        Array[File] mccoil_summary = RunMcCoil.mccoil_summary_files
         File final_output = FinalDataset.final_output
     }
 }
