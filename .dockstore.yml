@@ -6,3 +6,6 @@ workflows:
 - name: run-incidence-regression
   subclass: wdl
   primaryDescriptorPath: /run-incidence-regression.wdl
+- name: run-incidence-regression-update
+  subclass: wdl
+  primaryDescriptorPath: /run-incidence-regression-update.wdl
