@@ -1,0 +1,15 @@
+{
+    "compile_datasets.input_directory": ["SEN_20_KDG_11-26_20211228_SKV.xls", 
+    "SEN_20_KDG_57_72_20211231_SKV.xls", 
+    "SEN_20_KDG_73_88_20211231_SKV.xls",
+    "SEN_20_KDG_89_102_20220103_SKV.xls",
+    "SEN_20_SLP_17-32_20211228.xls",
+    "SEN_20_SLP33-48_20211228_SKV.xls",
+    "SEN_20_SLP49-50_KDG1-10_20211228_SKV.xls",
+    "SEN_2020_SLP_1-16_skv_20211227.xls"],
+
+    "compile_datasets.year": 2020,
+
+    "compile_datasets.threshold": 8
+
+}
